@@ -483,7 +483,7 @@ class TodoApp {
   }
 
   async detectCurrentPort() {
-    const possiblePorts = [3001, 3002, 3003, 8000, 8080];
+    const possiblePorts = [3001, 3002, 3003, 8000, 8080, 6262];
     let detectedPort = null;
     
     for (const port of possiblePorts) {
@@ -507,7 +507,7 @@ class TodoApp {
     
     if (!detectedPort) {
       document.getElementById('port-input').placeholder = 'Server not detected';
-      document.getElementById('port-input').title = 'API server not running on common ports (3001, 3002, 3003, 8000, 8080)';
+      document.getElementById('port-input').title = 'API server not running on common ports';
     }
     
     return detectedPort;
@@ -523,11 +523,11 @@ class TodoApp {
     }
     
     try {
-      // First detect current port
+      // Get current detected port
       const currentPort = await this.detectCurrentPort();
       
       if (!currentPort) {
-        alert('Could not detect running API server. Make sure it\'s running on one of these ports: 3001, 3002, 3003, 8000, 8080');
+        alert('Could not detect running API server. Make sure it\'s running on one of the common ports.');
         return;
       }
       
@@ -537,29 +537,29 @@ class TodoApp {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ port }),
-        timeout: 3000
+        body: JSON.stringify({ port })
       });
       
       if (response.ok) {
         const result = await response.json();
-        alert(`Port updated to ${port}. Please restart the API server to apply changes.\n\nCurrent server is running on port ${currentPort}.\n\nAfter restart, the server will run on port ${port}.`);
+        alert(`Port updated to ${port}. Please restart the API server to apply changes.\n\nPrevious server was running on port ${currentPort}.\n\nAfter restart, server will run on port ${port}.`);
         this.togglePortConfig();
         
-        // Clear the input field
+        // Clear input field
         input.value = '';
+        input.placeholder = `Previous: ${currentPort}, New: ${port}`;
         
-        // Try to detect new port after a short delay (in case user restarts quickly)
+        // Try to detect new port after a short delay
         setTimeout(() => {
           this.detectCurrentPort();
-        }, 1000);
+        }, 2000);
         
       } else {
         const error = await response.json();
         alert(error.error || 'Failed to update port');
       }
     } catch (error) {
-      alert('Failed to update port configuration. Please check if the API server is running.');
+      alert('Failed to connect to API server. Make sure it\'s running.');
       console.error('Port update error:', error);
     }
   }
