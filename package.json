@@ -1,0 +1,24 @@
+{
+  "name": "dev-todo",
+  "version": "1.0.0",
+  "description": "A minimalist todo app for developers",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "api": "node api-server.js",
+    "api-dev": "node api-server.js --dev"
+  },
+  "keywords": ["todo", "developer", "electron", "minimalist"],
+  "author": "Developer",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-jsdoc": "^6.2.8"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}
