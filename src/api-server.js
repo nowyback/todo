@@ -74,55 +74,124 @@ Enter your choice (1-6): `;
                 console.log(`📍 Using custom port: ${portNum}`);
                 resolve(portNum);
               }
-              method: 'GET',
-              timeout: 2000
             });
-            
-            if (response.ok) {
-              availablePort = port;
-              console.log(`✅ Port ${port} is available`);
-              return true;
-            }
-          } catch (err) {
-            // Port is not available
-            return false;
-          }
-        };
-        
-        const checkPorts = async () => {
-          for (const port of commonPorts) {
-            const isAvailable = await checkPort(port);
-            if (isAvailable) {
-              availablePort = port;
-              break;
-            }
-          }
-          
-          if (availablePort) {
-            PORT = availablePort;
-            console.log(`📍 Using available port: ${availablePort}`);
-            startServer();
-          } else {
-            console.log('❌ No common ports available. Using default port 3001.');
-            PORT = 3001;
-            startServer();
-          }
-        };
-        
-        // Start port checking
-        checkPorts();
-        break;
+            break;
+          case '6':
+            console.log('📍 Using environment variable PORT');
+            console.log('💡 Set PORT environment variable: PORT=3002');
+            console.log('💡 Then restart: npm run api');
+            resolve(null);
+            break;
+          default:
+            console.log('❌ Invalid choice. Using default port 3001.');
+            resolve(3001);
+            break;
+        }
+      });
+    });
+  };
+
+  const checkPort = async (port) => {
+    try {
+      const response = await fetch(`http://localhost:${port}/api/health`, {
+        method: 'GET',
+        timeout: 2000
+      });
+      
+      if (response.ok) {
+        console.log(`✅ Port ${port} is available`);
+        return true;
+      }
+    } catch (err) {
+      return false;
     }
+  };
+
+  const checkPorts = async () => {
+    console.log('⏹️ Looking for available ports...');
+    const commonPorts = [3001, 3002, 3003, 8000, 8080];
+    let availablePort = null;
+    
+    for (const port of commonPorts) {
+      const isAvailable = await checkPort(port);
+      if (isAvailable) {
+        availablePort = port;
+        console.log(`✅ Port ${port} is available`);
+        break;
+      }
+    }
+    
+    if (availablePort) {
+      return availablePort;
+    } else {
+      console.log('❌ No common ports available. Using default port 3001.');
+      return 3001;
+    }
+  };
+
+  const startServer = () => {
+    const httpServer = app.listen(PORT, () => {
+      console.log(`\n🚀 Todoodle API server running on port ${PORT}`);
+      console.log(`📖 API Documentation: http://localhost:${PORT}/api-docs`);
+      console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+      console.log(`\n💡 To change port: PUT http://localhost:${PORT}/api/config/port {"port": 3002}`);
+      console.log(`\n💡 To stop server: Press Ctrl+C\n`);
+    });
+    
+    httpServer.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use!`);
+        console.error(`💡 Try these solutions:`);
+        console.error(`   1. Change port: PUT /api/config/port {"port": 3002}`);
+        console.error(`   2. Kill process: Find and terminate the process using port ${PORT}`);
+        console.error(`   3. Check for other apps: Maybe another API server is running`);
+        console.error(`   4. Restart with different port: PORT=3002 node api-server.js`);
+      } else {
+        console.error(`❌ Server error:`, error);
+      }
+    });
+  };
+
+  askForPort().then((port) => {
+    if (port === null) {
+      console.log('Using environment variable PORT');
+      PORT = process.env.PORT;
+      if (!PORT) {
+        console.log('No environment variable PORT set. Using default port 3001.');
+        PORT = 3001;
+      }
+    } else {
+      PORT = port;
+    }
+    startServer();
   });
 } else {
   console.log(`📍 Using configured port: ${PORT}`);
+  const startServer = () => {
+    const httpServer = app.listen(PORT, () => {
+      console.log(`\n🚀 Todoodle API server running on port ${PORT}`);
+      console.log(`📖 API Documentation: http://localhost:${PORT}/api-docs`);
+      console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+      console.log(`\n💡 To change port: PUT http://localhost:${PORT}/api/config/port {"port": 3002}`);
+      console.log(`\n💡 To stop server: Press Ctrl+C\n`);
+    });
+    
+    httpServer.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use!`);
+        console.error(`💡 Try these solutions:`);
+        console.error(`   1. Change port: PUT /api/config/port {"port": 3002}`);
+        console.error(`   2. Kill process: Find and terminate the process using port ${PORT}`);
+        console.error(`   3. Check for other apps: Maybe another API server is running`);
+        console.error(`   4. Restart with different port: PORT=3002 node api-server.js`);
+      } else {
+        console.error(`❌ Server error:`, error);
+      }
+    });
+  };
   startServer();
 }
 
-function startServer() {
-  // Start server
-  const httpServer = app.listen(PORT, () => {
-    console.log(`\n🚀 Todoodle API server running on port ${PORT}`);
     console.log(`📖 API Documentation: http://localhost:${PORT}/api-docs`);
     console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
     console.log(`\n💡 To change port: PUT http://localhost:${PORT}/api/config/port {"port": 3002}`);
