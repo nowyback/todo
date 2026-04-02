@@ -6,10 +6,12 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
+const DATA_FILE = path.join(__dirname, 'todos-api.json');
+const CONFIG_FILE = path.join(__dirname, 'api-config.json');
+
 let PORT = process.env.PORT || 3001;
 
 // Check for config file
-const CONFIG_FILE = path.join(__dirname, 'api-config.json');
 try {
   if (fs.existsSync(CONFIG_FILE)) {
     const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
@@ -18,8 +20,6 @@ try {
 } catch (error) {
   console.log('No config file found, using default port');
 }
-
-const DATA_FILE = path.join(__dirname, 'todos-api.json');
 
 // Middleware
 app.use(cors());
@@ -580,10 +580,24 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Dev Todo API Server running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Todoodle API server running on port ${PORT}`);
+  console.log(`� API Documentation: http://localhost:${PORT}/api-docs`);
   console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use!`);
+    console.error(`💡 Try these solutions:`);
+    console.error(`   1. Change port: PUT /api/config/port {"port": 3002}`);
+    console.error(`   2. Kill process: Find and terminate the process using port ${PORT}`);
+    console.error(`   3. Check for other apps: Maybe another API server is running`);
+    console.error(`   4. Restart with different port: PORT=3002 node api-server.js`);
+  } else {
+    console.error(`❌ Server error:`, error);
+  }
 });
 
 module.exports = app;
