@@ -9,16 +9,130 @@ const app = express();
 const DATA_FILE = path.join(__dirname, 'todos-api.json');
 const CONFIG_FILE = path.join(__dirname, 'api-config.json');
 
-let PORT = process.env.PORT || 3001;
+let PORT = process.env.PORT || null;
 
 // Check for config file
 try {
   if (fs.existsSync(CONFIG_FILE)) {
     const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
-    PORT = config.port || PORT;
+    PORT = config.port || null;
   }
 } catch (error) {
   console.log('No config file found, using default port');
+}
+
+// If no port configured, ask user
+if (!PORT) {
+  const readline = require('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const question = `
+🚀 Todoodle API Server Startup
+===============================
+
+Choose port configuration:
+1) Use port 3001 (default)
+2) Use port 3002
+3) Use port 8000
+4) Use port 8080
+5) Use custom port
+6) Use environment variable (PORT=xxxx)
+
+Enter your choice (1-6): `;
+
+  rl.question(question, (answer) => {
+    rl.close();
+    
+    switch (answer.trim()) {
+      case '1':
+        PORT = 3001;
+        console.log('📍 Using default port: 3001');
+        break;
+      case '2':
+        PORT = 3002;
+        console.log('📍 Using port: 3002');
+        break;
+      case '3':
+        PORT = 8000;
+        console.log('📍 Using port: 8000');
+        break;
+      case '4':
+        PORT = 8080;
+        console.log('📍 Using port: 8080');
+        break;
+      case '5':
+        rl.question('Enter custom port (1000-65535): ', (customPort) => {
+          rl.close();
+          PORT = parseInt(customPort);
+          if (isNaN(PORT) || PORT < 1000 || PORT > 65535) {
+            console.log('❌ Invalid port. Using default port 3001.');
+            PORT = 3001;
+          } else {
+            console.log(`📍 Using custom port: ${PORT}`);
+          }
+          startServer();
+        });
+        break;
+      case '6':
+        console.log('📍 Using environment variable PORT');
+        console.log('💡 Set PORT environment variable: PORT=3002');
+        console.log('💡 Then restart: npm run api');
+        rl.close();
+        setTimeout(() => {
+          console.log('⏹️ Server starting in 3 seconds...');
+          console.log('💡 Press Ctrl+C to cancel');
+        }, 1000);
+        
+        // Give user time to cancel
+        const cancelTimer = setTimeout(() => {
+          startServer();
+        }, 3000);
+        
+        rl.on('SIGINT', () => {
+          clearTimeout(cancelTimer);
+          rl.close();
+          console.log('❌ Startup cancelled');
+          process.exit(0);
+        });
+        break;
+      default:
+        console.log('❌ Invalid choice. Using default port 3001.');
+        PORT = 3001;
+        startServer();
+        break;
+    }
+  });
+} else {
+  console.log(`📍 Using configured port: ${PORT}`);
+  startServer();
+}
+
+function startServer() {
+  // Start server
+  const httpServer = app.listen(PORT, () => {
+    console.log(`\n🚀 Todoodle API server running on port ${PORT}`);
+    console.log(`📖 API Documentation: http://localhost:${PORT}/api-docs`);
+    console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+    console.log(`\n💡 To change port: PUT http://localhost:${PORT}/api/config/port {"port": 3002}`);
+    console.log(`\n💡 To stop server: Press Ctrl+C\n`);
+  });
+  
+  // Handle server errors
+  httpServer.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use!`);
+      console.error(`💡 Try these solutions:`);
+      console.error(`   1. Change port: PUT /api/config/port {"port": 3002}`);
+      console.error(`   2. Kill process: Find and terminate the process using port ${PORT}`);
+      console.error(`   3. Check for other apps: Maybe another API server is running`);
+      console.error(`   4. Restart with different port: PORT=3002 node api-server.js`);
+    } else {
+      console.error(`❌ Server error:`, error);
+    }
+  });
 }
 
 // Middleware
