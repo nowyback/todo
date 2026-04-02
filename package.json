@@ -1,13 +1,19 @@
 {
-  "name": "dev-todo",
-  "version": "0.7.0",
-  "description": "A minimalist todo app for primarily developers",
+  "name": "todoodle",
+  "version": "0.7.1",
+  "description": "A minimalist todo app for developers with PWA and mobile support",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
     "api": "node api-server.js",
-    "api-dev": "node api-server.js --dev"
+    "api-dev": "nodemon api-server.js",
+    "build": "echo 'No build step needed for web app'",
+    "pwa": "echo 'PWA ready - serve with any HTTP server'",
+    "capacitor:add": "npx cap init Todoodle com.todoodle.app && npx cap add android",
+    "capacitor:sync": "npx cap sync android",
+    "capacitor:open": "npx cap open android",
+    "cordova:build": "cordova build android"
   },
   "keywords": ["todo", "developer", "electron", "minimalist"],
   "author": "Developer",
