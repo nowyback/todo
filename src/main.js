@@ -5,7 +5,7 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window
-  mainWindow = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 400,
@@ -20,13 +20,17 @@ function createWindow() {
     vibrancy: 'under-window',
     visualEffectState: 'active',
     title: 'Todoodle',
-    show: false
+    show: false,
+    fullscreen: process.argv.includes('--fullscreen') // Start in fullscreen if flag is passed
   });
 
   // Load the app
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
   
   mainWindow.once('ready-to-show', () => {
+    if (process.argv.includes('--fullscreen')) {
+      mainWindow.setFullScreen(true);
+    }
     mainWindow.show();
   });
 
