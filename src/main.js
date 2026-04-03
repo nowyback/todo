@@ -1,6 +1,11 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
 
+// Set app icon before creating windows
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.todoodle.app');
+}
+
 let mainWindow;
 
 function createWindow() {
@@ -15,7 +20,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'assets/icon.png'), // Optional: Add an icon
+    icon: path.join(__dirname, 'icon.ico'), // App icon
     titleBarStyle: 'hiddenInset',
     vibrancy: 'under-window',
     visualEffectState: 'active',

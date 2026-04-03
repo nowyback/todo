@@ -53,6 +53,12 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "src/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
     "win": {
       "target": "nsis",
       "icon": "src/icon.ico"
