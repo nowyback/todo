@@ -10,6 +10,8 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window
+  const iconPath = path.resolve(__dirname, 'icon.ico');
+  
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -20,7 +22,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'icon.ico'), // App icon
+    icon: iconPath,
     titleBarStyle: 'hiddenInset',
     vibrancy: 'under-window',
     visualEffectState: 'active',
