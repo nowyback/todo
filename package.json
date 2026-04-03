@@ -14,7 +14,10 @@
     "capacitor:add": "npx cap init Todoodle com.todoodle.app && npx cap add android",
     "capacitor:sync": "npx cap sync android",
     "capacitor:open": "npx cap open android",
-    "cordova:build": "cordova build android"
+    "cordova:build": "cordova build android",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist-win": "electron-builder --win"
   },
   "keywords": [
     "todo",
@@ -35,6 +38,29 @@
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
-    "electron": "^28.0.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.todoodle.app",
+    "productName": "Todoodle",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "src/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
