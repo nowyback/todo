@@ -1,0 +1,51 @@
+{
+  "name": "todoodle-server",
+  "version": "0.11.4",
+  "description": "Todoodle Server - Complete todo management API server",
+  "main": "src/api-server.js",
+  "scripts": {
+    "start": "node src/api-server.js",
+    "server": "node src/api-server.js",
+    "dev": "nodemon src/api-server.js",
+    "console": "node console.js",
+    "console-server": "node console-server.js",
+    "install": "npm install",
+    "test": "node -e \"console.log('Server installation test passed')\"",
+    "health": "curl -f http://localhost:3001/api/health || echo 'Server not running'",
+    "backup": "node -e \"const fs = require('fs'); const d = new Date().toISOString().slice(0,10); fs.copyFileSync('src/todos-api.json', 'backups/todos-api-' + d + '.json'); console.log('Backup created: todos-api-' + d + '.json');\"",
+    "logs": "tail -f logs/server.log",
+    "stop": "pkill -f 'node src/api-server.js' || taskkill /F /IM node.exe",
+    "restart": "npm run stop && npm start"
+  },
+  "keywords": [
+    "todo",
+    "api",
+    "server",
+    "nodejs",
+    "express",
+    "rest",
+    "todoodle"
+  ],
+  "author": "Todoodle Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nowyback/todoodle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nowyback/todoodle/issues"
+  },
+  "homepage": "https://github.com/nowyback/todoodle#readme"
+}

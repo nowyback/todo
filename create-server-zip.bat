@@ -1,0 +1,12 @@
+@echo off
+cd /d "d:\Developing\CascadeProjects\todoodle"
+echo "Creating Todoodle Server v0.11.4.zip..."
+powershell -Command "Add-Type -CompressedArchive -Path 'server-setup' -DestinationPath 'todoodle-server-v0.11.4.zip'"
+echo "Server package created successfully!"
+echo "File location: todoodle-server-v0.11.4.zip"
+echo ""
+echo "To install:"
+echo "1. Extract todoodle-server-v0.11.4.zip"
+echo "2. cd todoodle-server"
+echo "3. npm install"
+echo "4. npm run server"

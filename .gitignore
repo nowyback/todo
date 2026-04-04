@@ -139,6 +139,7 @@ src/backgrounds/*.webp
 # User generated content
 user-themes/
 custom-backgrounds/
+versions/
 
 # Build artifacts
 *.exe
@@ -160,6 +161,26 @@ start.bat
 *.log
 .DS_Store
 Thumbs.db
+
+# Server installation files
+SERVER_INSTALL.md
+install.sh
+install.bat
+server-package.json
+Dockerfile
+docker-compose-server.yml
+start-server.bat
+
+# Server data and logs
+data/
+logs/
+backups/
+src/todos-api.json
+src/api-config.json
+
+# Console files
+console-server.js
+todos-console.json
 
 # Theme files (user generated only)
 themes/*.theme.css
