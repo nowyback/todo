@@ -2,6 +2,9 @@
 
 **LOCAL FILES ONLY** - No internet URLs supported!
 
+## Location
+This folder is located at: `src/backgrounds/`
+
 ## Supported Formats
 - JPG
 - PNG  
@@ -11,13 +14,13 @@
 ## How to Use
 1. Place images in this folder ONLY
 2. In Todoodle, press Ctrl+B
-3. Enter the filename (e.g., `./backgrounds/my-image.jpg`)
-4. Click "Set Background"
+3. Use the file browser to select images
+4. Click "Browse" to apply background
 
 ## Examples
-- `./backgrounds/dark-theme.jpg` (for dark mode)
-- `./backgrounds/light-theme.jpg` (for light mode)
-- `./backgrounds/nature.jpg` (works for both)
+- `dark-theme.jpg` (for dark mode)
+- `light-theme.jpg` (for light mode)
+- `nature.jpg` (works for both)
 
 ## Rules
 - ✅ Local files ONLY

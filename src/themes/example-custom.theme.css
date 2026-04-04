@@ -1,0 +1,105 @@
+/* Example Custom Theme - Copy this file and modify! */
+/* File name format: your-theme-name.theme.css */
+
+:root {
+  /* Define your custom colors */
+  --primary-color: #ff6b6b;
+  --primary-hover: #ff5252;
+  --background: #1a1a2e;
+  --surface: #16213e;
+  --text: #ffffff;
+  --text-secondary: #b8b8b8;
+  --text-muted: #888888;
+  --border: #3a3a5a;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --danger: #f44336;
+  
+  /* Glass morphism variables */
+  --glass-bg: rgba(255, 107, 107, 0.1);
+  --glass-bg-hover: rgba(255, 107, 107, 0.2);
+  --glass-border: rgba(255, 107, 107, 0.3);
+  --glass-border-hover: rgba(255, 107, 107, 0.5);
+  --glass-blur: 15px;
+  --glass-shadow: 0 8px 32px rgba(255, 107, 107, 0.1);
+  --glass-shadow-hover: 0 12px 48px rgba(255, 107, 107, 0.2);
+  
+  /* Border radius */
+  --app-radius: 20px;
+  --card-radius: 16px;
+  --button-radius: 12px;
+}
+
+/* Apply to main elements */
+.header {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--app-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+body {
+  background: var(--background) !important;
+  border-radius: var(--app-radius);
+  overflow-x: hidden;
+}
+
+.app-container {
+  border-radius: var(--app-radius);
+  overflow-x: hidden;
+}
+
+.todo-item {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.3s ease !important;
+}
+
+.todo-item:hover {
+  background: var(--glass-bg-hover) !important;
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: var(--glass-shadow-hover) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+.add-btn, .port-btn, #apply-theme-btn {
+  background: var(--glass-bg) !important;
+  color: var(--primary-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--button-radius) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  transition: all 0.3s ease !important;
+}
+
+.add-btn:hover, .port-btn:hover, #apply-theme-btn:hover {
+  background: var(--glass-bg-hover) !important;
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: var(--glass-shadow-hover) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Light mode support */
+[data-theme="light"] {
+  --primary-color: #d63031;
+  --primary-hover: #74b9ff;
+  --background: #f5f5f5;
+  --surface: #ffffff;
+  --text: #2d3436;
+  --text-secondary: #636e72;
+  --text-muted: #b2bec3;
+  --border: #dfe6e9;
+  --glass-bg: rgba(214, 48, 49, 0.1);
+  --glass-bg-hover: rgba(214, 48, 49, 0.15);
+  --glass-border: rgba(214, 48, 49, 0.2);
+  --glass-border-hover: rgba(214, 48, 49, 0.3);
+  --glass-shadow: 0 8px 32px rgba(214, 48, 49, 0.08);
+  --glass-shadow-hover: 0 12px 48px rgba(214, 48, 49, 0.12);
+}

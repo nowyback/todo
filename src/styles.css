@@ -688,6 +688,39 @@ input:checked + .slider:before {
   margin-bottom: 1rem;
 }
 
+/* Default theme container styling */
+.port-config-container,
+.background-settings-container {
+  background: var(--surface);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.port-config-container:hover,
+.background-settings-container:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .port-config-container,
+[data-theme="light"] .background-settings-container {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .port-config-container:hover,
+[data-theme="light"] .background-settings-container:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.1);
+}
+
 .footer {
   margin-top: 2rem;
   padding-top: 1rem;

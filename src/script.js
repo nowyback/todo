@@ -1,10 +1,19 @@
+// Create a timeout controller for fetch requests
+class TimeoutController {
+  static timeout(ms) {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), ms);
+    return controller.signal;
+  }
+}
+
 class TodoApp {
   constructor() {
     this.todos = [];
     this.currentFilter = 'all';
     this.currentCategory = 'all';
     this.categories = ['General'];
-    this.darkMode = localStorage.getItem('todoodle-theme') === 'light';
+    this.darkMode = localStorage.getItem('todoodle-theme') !== 'light'; // true = dark mode, false = light mode
     this.customBackgrounds = {
       dark: localStorage.getItem('todoodle-bg-dark') || '',
       light: localStorage.getItem('todoodle-bg-light') || ''
@@ -23,7 +32,7 @@ class TodoApp {
     this.updateStats();
     
     // Apply current theme and background
-    const currentTheme = this.darkMode ? 'light' : 'dark';
+    const currentTheme = this.darkMode ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
     this.applyCustomBackground(currentTheme);
     
@@ -95,8 +104,11 @@ class TodoApp {
     // Theme settings buttons
     document.getElementById('theme-toggle').addEventListener('change', () => this.toggleThemeSwitch());
     document.getElementById('apply-theme-btn').addEventListener('click', () => this.applySelectedTheme());
-    document.getElementById('browse-bg-btn').addEventListener('click', () => this.setBackgroundFromFile());
+    document.getElementById('browse-bg-btn').addEventListener('click', () => this.browseForBackground());
     document.getElementById('reset-bg-btn').addEventListener('click', () => this.resetBackground());
+    
+    // File input change listener
+    document.getElementById('bg-file').addEventListener('change', () => this.setBackgroundFromFile());
     
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -482,13 +494,17 @@ class TodoApp {
       try {
         const response = await fetch(`http://localhost:${port}/api/health`, {
           method: 'GET',
-          timeout: 2000
+          signal: TimeoutController.timeout(2000)
         });
         
         if (response.ok) {
           detectedPort = port;
-          document.getElementById('port-input').placeholder = `Current: ${port}`;
-          document.getElementById('port-input').title = `API server is running on port ${port}`;
+          const input = document.getElementById('port-input');
+          if (input) {
+            input.placeholder = `Current: ${port}`;
+            input.title = `API server is running on port ${port}`;
+          }
+          console.log(`API server detected on port ${port}`);
           break;
         }
       } catch (err) {
@@ -630,24 +646,40 @@ class TodoApp {
 
   applyCustomBackground(theme) {
     const bgUrl = this.customBackgrounds[theme];
+    const hasCustomTheme = this.currentTheme !== 'default';
+    
     if (bgUrl) {
-      // Only support local files
+      // Custom background overrides theme background when custom theme is active
       document.body.style.backgroundImage = `url(${bgUrl})`;
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'center';
-      document.body.style.backgroundAttachment = 'fixed';
-      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundSize = 'cover'; // Zoomed to fit, covers entire area
+      document.body.style.backgroundPosition = 'center'; // Centered
+      document.body.style.backgroundAttachment = 'fixed'; // Fixed position
+      document.body.style.backgroundRepeat = 'no-repeat'; // No repetition
+      
+      // Add higher CSS priority for custom background properties
+      document.body.style.setProperty('background-image', `url(${bgUrl})`, 'important');
+      document.body.style.setProperty('background-size', 'cover', 'important');
+      document.body.style.setProperty('background-position', 'center', 'important');
+      document.body.style.setProperty('background-attachment', 'fixed', 'important');
+      document.body.style.setProperty('background-repeat', 'no-repeat', 'important');
     } else {
+      // Only remove background image if no custom background
       document.body.style.backgroundImage = '';
+      document.body.style.removeProperty('background-image');
+      
+      // If no custom theme, let theme control everything
+      if (!hasCustomTheme) {
+        document.body.style.removeProperty('background');
+      }
     }
   }
 
   setCustomBackground(theme, url) {
     this.customBackgrounds[theme] = url;
     localStorage.setItem(`todoodle-bg-${theme}`, url);
-    const currentTheme = this.darkMode ? 'light' : 'dark';
+    const currentTheme = this.darkMode ? 'dark' : 'light';
     if (theme === currentTheme) {
-      this.applyCustomBackground(theme);
+      this.applyCustomBackground(currentTheme);
     }
   }
 
@@ -665,17 +697,19 @@ class TodoApp {
     }
   }
 
-  toggleBackgroundSettings() {
+  async toggleBackgroundSettings() {
     const settings = document.getElementById('background-settings');
     const portConfig = document.getElementById('port-config');
     if (settings.style.display === 'none') {
       settings.style.display = 'block';
       portConfig.style.display = 'none';
-      // Load current values
-      document.getElementById('theme-selector').value = this.currentTheme;
+      // Populate theme selector with available themes
+      await this.populateThemeSelector();
       // Update toggle switch state
       const toggleSwitch = document.getElementById('theme-toggle');
-      toggleSwitch.checked = !this.darkMode; // darkMode = false means dark mode is ON
+      console.log('Opening settings, current darkMode:', this.darkMode);
+      toggleSwitch.checked = !this.darkMode; // darkMode = true (dark) -> unchecked, darkMode = false (light) -> checked
+      console.log('Setting toggle.checked to:', toggleSwitch.checked);
       // Update background display
       const currentBg = this.darkMode ? this.customBackgrounds.dark : this.customBackgrounds.light;
       this.updateBackgroundDisplay(currentBg ? 'Custom' : 'None');
@@ -686,9 +720,17 @@ class TodoApp {
 
   toggleThemeSwitch() {
     const toggleSwitch = document.getElementById('theme-toggle');
-    const isDarkMode = !toggleSwitch.checked; // Inverted: checked = light mode
+    console.log('Toggle switch clicked, checked:', toggleSwitch.checked);
+    console.log('Current darkMode:', this.darkMode);
+    
+    // darkMode = true (dark), false (light)
+    const isDarkMode = !toggleSwitch.checked; // unchecked = dark, checked = light
     this.darkMode = isDarkMode;
-    const theme = isDarkMode ? 'dark' : 'light';
+    const theme = this.darkMode ? 'dark' : 'light';
+    
+    console.log('New darkMode:', this.darkMode);
+    console.log('Setting theme to:', theme);
+    
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('todoodle-theme', theme);
     this.applyCustomBackground(theme);
@@ -698,6 +740,11 @@ class TodoApp {
     const selector = document.getElementById('theme-selector');
     const themeName = selector.value;
     this.switchTheme(themeName);
+  }
+
+  browseForBackground() {
+    const input = document.getElementById('bg-file');
+    input.click(); // This opens the file explorer
   }
 
   setBackgroundFromFile() {
@@ -721,12 +768,6 @@ class TodoApp {
     currentSpan.textContent = filename || 'None';
   }
 
-  loadAvailableThemes() {
-    // This will be implemented to auto-detect themes
-    const themeSelector = document.getElementById('theme-selector');
-    // For now, keep the hardcoded options
-  }
-
   resetBackground() {
     const theme = this.darkMode ? 'dark' : 'light';
     this.setCustomBackground(theme, '');
@@ -745,6 +786,51 @@ class TodoApp {
     fileInput.value = '';
     // Update display
     this.updateBackgroundDisplay('None');
+  }
+
+  async loadAvailableThemes() {
+    const themes = ['default'];
+    
+    try {
+      // Try to fetch themes directory listing
+      const response = await fetch('./themes/');
+      if (response.ok) {
+        const text = await response.text();
+        // Parse HTML to find .theme.css files
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const links = doc.querySelectorAll('a[href$=".theme.css"]');
+        
+        links.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href) {
+            const themeName = href.replace('.theme.css', '').replace('./themes/', '');
+            if (themeName && !themes.includes(themeName)) {
+              themes.push(themeName);
+            }
+          }
+        });
+      }
+    } catch (error) {
+      // Fallback to known themes if directory listing fails
+      console.log('Could not fetch themes directory, using fallback themes');
+      themes.push('dark-matter', 'fallout-terminal', 'translucent');
+    }
+    
+    return themes;
+  }
+
+  async populateThemeSelector() {
+    const selector = document.getElementById('theme-selector');
+    const themes = await this.loadAvailableThemes();
+    
+    selector.innerHTML = themes.map(theme => {
+      const displayName = theme.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return `<option value="${theme}">${displayName}</option>`;
+    }).join('');
+    
+    // Set current theme
+    selector.value = this.currentTheme;
   }
 
   loadTheme(themeName) {
@@ -767,6 +853,17 @@ class TodoApp {
     link.rel = 'stylesheet';
     link.href = `./themes/${themeName}.theme.css`;
     document.head.appendChild(link);
+    
+    // Add error handling
+    link.onerror = () => {
+      console.error(`Failed to load theme: ${themeName}`);
+      console.log('Available themes:', ['dark-matter', 'fallout-terminal', 'translucent']);
+    };
+    
+    // Add success handling
+    link.onload = () => {
+      console.log(`Successfully loaded theme: ${themeName}`);
+    };
   }
 
   removeThemeStyles() {

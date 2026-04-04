@@ -1,0 +1,267 @@
+/* ==============================================
+   CUSTOM THEME TEMPLATE - COPY & MODIFY!
+   ==============================================
+   
+   File Name: your-theme-name.theme.css
+   ==============================================
+*/
+
+/* 
+   🎨 THEME CUSTOMIZATION GUIDE
+   
+   1. RENAME this file to: your-theme-name.theme.css
+   2. MODIFY the colors below to match your vision
+   3. DROP in src/themes/ folder
+   4. SELECT in Todoodle settings (Ctrl+B)
+   5. APPLY to see your custom theme!
+*/
+
+/* ==============================================
+   🎯 THEME VARIABLES
+   ============================================== */
+
+:root {
+  /* 🎨 PRIMARY COLORS */
+  --primary-color: #6366f1;        /* Main accent color */
+  --primary-hover: #4f46e5;        /* Hover state */
+  --primary-light: #818cf8;         /* Light variant */
+  
+  /* 🌈 BACKGROUND COLORS */
+  --background: #0f172a;           /* Main app background */
+  --surface: #1e293b;              /* Card/container backgrounds */
+  --surface-hover: #334155;         /* Hover state */
+  
+  /* 📝 TEXT COLORS */
+  --text: #f1f5f9;                /* Primary text */
+  --text-secondary: #cbd5e1;        /* Secondary text */
+  --text-muted: #64748b;           /* Muted/disabled text */
+  --text-inverse: #0f172a;          /* Text on primary colors */
+  
+  /* 🔗 BORDER & SHADOWS */
+  --border: #334155;               /* Element borders */
+  --border-hover: #475569;          /* Hover borders */
+  --shadow: rgba(0, 0, 0, 0.1);    /* Drop shadows */
+  --shadow-hover: rgba(0, 0, 0, 0.2); /* Enhanced shadows */
+  
+  /* 🚦 STATUS COLORS */
+  --success: #10b981;              /* Success state */
+  --warning: #f59e0b;              /* Warning state */
+  --danger: #ef4444;                /* Error/danger state */
+  --info: #3b82f6;                  /* Info state */
+  
+  /* ✨ GLASS MORPHISM EFFECTS */
+  --glass-bg: rgba(99, 102, 241, 0.08);           /* Glass background */
+  --glass-bg-hover: rgba(99, 102, 241, 0.12);      /* Glass hover */
+  --glass-border: rgba(99, 102, 241, 0.15);        /* Glass borders */
+  --glass-border-hover: rgba(99, 102, 241, 0.25);   /* Glass hover borders */
+  --glass-blur: 12px;                               /* Backdrop blur amount */
+  --glass-shadow: 0 8px 32px rgba(99, 102, 241, 0.08); /* Glass shadows */
+  --glass-shadow-hover: 0 12px 40px rgba(99, 102, 241, 0.12); /* Enhanced glass shadows */
+  
+  /* 🔄 BORDER RADIUS */
+  --app-radius: 16px;               /* Main app corners */
+  --card-radius: 12px;              /* Card/item corners */
+  --button-radius: 8px;             /* Button corners */
+  --input-radius: 6px;              /* Input field corners */
+  
+  /* 🎭 TRANSITIONS */
+  --transition-fast: 0.15s ease;     /* Quick transitions */
+  --transition-normal: 0.3s ease;    /* Normal transitions */
+  --transition-slow: 0.5s ease;      /* Slow transitions */
+}
+
+/* ==============================================
+   🌟 LIGHT MODE SUPPORT
+   ============================================== */
+
+[data-theme="light"] {
+  /* 🎨 LIGHT PRIMARY COLORS */
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #6366f1;
+  
+  /* 🌈 LIGHT BACKGROUND COLORS */
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --surface-hover: #f1f5f9;
+  
+  /* 📝 LIGHT TEXT COLORS */
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  
+  /* 🔗 LIGHT BORDER & SHADOWS */
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-hover: rgba(0, 0, 0, 0.1);
+  
+  /* ✨ LIGHT GLASS EFFECTS */
+  --glass-bg: rgba(79, 70, 229, 0.05);
+  --glass-bg-hover: rgba(79, 70, 229, 0.08);
+  --glass-border: rgba(79, 70, 229, 0.1);
+  --glass-border-hover: rgba(79, 70, 229, 0.15);
+  --glass-shadow: 0 8px 32px rgba(79, 70, 229, 0.05);
+  --glass-shadow-hover: 0 12px 40px rgba(79, 70, 229, 0.08);
+}
+
+/* ==============================================
+   🎯 CORE ELEMENT STYLING
+   ============================================== */
+
+/* 📱 Main App Container */
+body {
+  background: var(--background) !important;
+  color: var(--text) !important;
+  border-radius: var(--app-radius) !important;
+  overflow-x: hidden !important;
+  transition: background var(--transition-normal);
+}
+
+.app-container {
+  border-radius: var(--app-radius) !important;
+  overflow-x: hidden !important;
+  min-height: 100vh;
+}
+
+/* 🎪 Header Bar */
+.header {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--app-radius) var(--app-radius) 0 0 !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+/* 📝 Todo Items */
+.todo-item {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.todo-item:hover {
+  background: var(--glass-bg-hover) !important;
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: var(--glass-shadow-hover) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* 🔘 Buttons */
+.add-btn, .port-btn, #apply-theme-btn {
+  background: var(--glass-bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--button-radius) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.add-btn:hover, .port-btn:hover, #apply-theme-btn:hover {
+  background: var(--glass-bg-hover) !important;
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: var(--glass-shadow-hover) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* 🎨 Primary Button Variant */
+.add-btn, #apply-theme-btn {
+  background: var(--primary-color) !important;
+  color: var(--text-inverse) !important;
+}
+
+.add-btn:hover, #apply-theme-btn:hover {
+  background: var(--primary-hover) !important;
+}
+
+/* 📝 Input Fields */
+.port-input, input[type="text"], input[type="number"] {
+  background: var(--glass-bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--input-radius) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.port-input:focus, input[type="text"]:focus, input[type="number"]:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px var(--glass-bg-hover) !important;
+}
+
+/* ==============================================
+   🎭 SPECIAL EFFECTS (Optional)
+   ============================================== */
+
+/* 🌟 Animated Gradient Background (Uncomment to use) */
+/*
+body {
+  background: linear-gradient(135deg, var(--background), var(--surface)) !important;
+  background-size: 400% 400% !important;
+  animation: gradientShift 15s ease infinite !important;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+*/
+
+/* ✨ Sparkle Effect on Hover (Uncomment to use) */
+/*
+.todo-item:hover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: sparkle 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes sparkle {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+*/
+
+/* ==============================================
+   📚 THEME COMPLETED!
+   ==============================================
+
+   🎯 NEXT STEPS:
+   1. Save as: your-theme-name.theme.css
+   2. Place in: src/themes/ folder
+   3. Restart Todoodle or open settings (Ctrl+B)
+   4. Select your theme from dropdown
+   5. Click Apply to activate!
+
+   💡 PRO TIPS:
+   - Use !important to override default styles
+   - Test both dark and light modes
+   - Ensure good contrast for readability
+   - Add hover effects for better UX
+   - Keep file names simple (use hyphens, no spaces)
+
+   🎨 COLOR PALETTES:
+   - OCEAN: #0ea5e9, #0284c7, #0369a1
+   - FOREST: #10b981, #059669, #047857
+   - SUNSET: #f59e0b, #d97706, #b45309
+   - PURPLE: #8b5cf6, #7c3aed, #6d28d9
+   - ROSE: #f43f5e, #e11d48, #be123c
+
+   ==============================================
+*/
