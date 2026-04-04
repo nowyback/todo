@@ -11,15 +11,17 @@ const DATA_FILE = path.join(__dirname, 'todos-api.json');
 const CONFIG_FILE = path.join(__dirname, 'api-config.json');
 
 let PORT = process.env.PORT || null;
+let HOST = process.env.HOST || 'localhost';
 
 // Check for config file
 try {
   if (fs.existsSync(CONFIG_FILE)) {
     const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
     PORT = config.port || null;
+    HOST = config.address || HOST;
   }
 } catch (error) {
-  console.log('No config file found, using default port');
+  console.log('No config file found, using default settings');
 }
 
 // If no port configured, ask user
@@ -130,11 +132,11 @@ Enter your choice (1-6): `;
   };
 
   const startServer = () => {
-    const httpServer = app.listen(PORT, () => {
-      console.log(`\n🚀 Todoodle API server running on port ${PORT}`);
-      console.log(`📖 API Documentation: http://localhost:${PORT}/api-docs`);
-      console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
-      console.log(`\n💡 To change port: PUT http://localhost:${PORT}/api/config/port {"port": 3002}`);
+    const httpServer = app.listen(PORT, HOST, () => {
+      console.log(`\n🚀 Todoodle API server running on ${HOST}:${PORT}`);
+      console.log(`📖 API Documentation: http://${HOST}:${PORT}/api-docs`);
+      console.log(`🏥 Health Check: http://${HOST}:${PORT}/api/health`);
+      console.log(`\n💡 To change server: PUT http://${HOST}:${PORT}/api/config/server {"address": "new.example", "port": 3002}`);
       console.log(`\n💡 To stop server: Press Ctrl+C\n`);
     });
     
@@ -727,6 +729,86 @@ app.put('/api/config/port', (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update port configuration' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/config/server:
+ *   put:
+ *     summary: Update API server address and port
+ *     tags: [System]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - address
+ *               - port
+ *             properties:
+ *               address:
+ *                 type: string
+ *                 description: Server address (domain or IP)
+ *                 example: "todoodle.example"
+ *               port:
+ *                 type: integer
+ *                 description: Server port
+ *                 example: 3001
+ *     responses:
+ *       200:
+ *         description: Server configuration updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Server configuration updated to todoodle.example:3001. Please restart the server to apply changes."
+ *                 address:
+ *                   type: string
+ *                   example: "todoodle.example"
+ *                 port:
+ *                   type: integer
+ *                   example: 3001
+ *       400:
+ *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid address or port"
+ */
+app.put('/api/config/server', (req, res) => {
+  const { address, port } = req.body;
+  
+  // Validate address
+  if (!address || typeof address !== 'string' || address.trim() === '') {
+    return res.status(400).json({ error: 'Invalid address' });
+  }
+  
+  // Validate port
+  if (!port || port < 1 || port > 65535) {
+    return res.status(400).json({ error: 'Port must be between 1 and 65535' });
+  }
+  
+  try {
+    // Save both address and port to config
+    const config = { address: address.trim(), port };
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+    
+    res.json({ 
+      message: `Server configuration updated to ${address}:${port}. Please restart the server to apply changes.`,
+      address: address.trim(),
+      port 
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update server configuration' });
   }
 });
 

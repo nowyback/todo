@@ -1,32 +1,283 @@
 # Todoodle - A Minimalist Task Manager for Developers
 
-A sleek, feature-rich todo application built with Electron and Express, designed specifically for developers who want both a beautiful desktop app and a powerful REST API.
+A sleek, feature-rich todo application with multiple interfaces, designed specifically for developers who want both a beautiful desktop app, powerful console interface, and flexible REST API.
 
-## 🎨 Desktop App
-- **Minimalist UI** with smooth black background (#020202)
+## 🎨 Multiple Interfaces
+
+### 🖥️ Desktop App (Electron)
+- **Custom Themes** - Drop-in `.theme.css` files for complete customization
+- **Background Images** - Set custom backgrounds that override theme backgrounds
+- **Glass Morphism UI** - Modern frosted glass effects with smooth animations
 - **Individual task progress** with color-coded sliders (0-100%)
 - **Custom categories** with filtering and sorting
 - **Notes functionality** for detailed task descriptions
-- **Priority detection** based on keywords (urgent, important, etc.)
-- **Dark/Light theme** toggle (Ctrl+D)
+- **Dark/Light theme** toggle with smooth transitions
 - **Keyboard shortcuts** for power users
 - **Local storage** persistence
 
-### 📊 Progress Tracking
-- **Overall progress bar** showing total completion
-- **Category-specific progress** when filtering by category
-- **Color-coded progress**: Red (0-39%) → Orange (40-69%) → Yellow (70-89%) → Green (90-99%) → Purple (100%)
-- **Real-time updates** as you complete tasks
+### 💻 Console Version
+- **Full CLI interface** - Complete command-line todo management
+- **Local JSON storage** - Portable data files
+- **Server integration** - Sync with API server when available
+- **Progress tracking** - 0-100% progress with notes
+- **Category management** - Organize tasks by category
+- **Search functionality** - Find todos quickly
+- **Statistics** - Detailed completion metrics
 
-### 🌐 REST API
+### 🌐 REST API Server
 - **Full OpenAPI documentation** at `/api-docs`
-- **Configurable port** via UI or API endpoint
-- **CRUD operations** for todos
+- **Configurable address and port** - Support for domains and IPs
+- **CRUD operations** for todos with full metadata
 - **Category management** endpoints
 - **Statistics endpoint** for analytics
 - **CORS enabled** for external integrations
+- **Health checks** for monitoring
+
+## 🎨 Theme System
+
+### ✨ Custom Themes
+- **Auto-detection** - Drop `.theme.css` files in `src/themes/` folder
+- **Dynamic loading** - Themes appear instantly in settings (Ctrl+B)
+- **Template included** - `TEMPLATE.theme.template` for easy creation
+- **4 built-in themes**:
+  - **Dark Matter** - Blue frosty space theme
+  - **Fallout Terminal** - Green terminal aesthetic
+  - **Translucent** - Modern glass morphism
+  - **Example Custom** - Starting template
+
+### 🖼️ Background System
+- **Custom images** - Override theme backgrounds with personal images
+- **Smart sizing** - Cover mode with proper aspect ratio
+- **Theme compatibility** - Works with all custom themes
+- **Per-theme storage** - Separate backgrounds for dark/light modes
 
 ## 🚀 Quick Start
+
+### Desktop App
+```bash
+# Clone and install
+git clone https://github.com/nowyback/todoodle.git
+cd todoodle
+npm install
+
+# Start desktop app
+npm start
+```
+
+### Console Version
+```bash
+# Local console (JSON storage)
+npm run console
+
+# Server console (with sync)
+npm run console-server
+```
+
+### API Server
+```bash
+# Start server
+npm run server
+
+# Server with custom address
+HOST=todoodle.example PORT=3001 npm run server
+```
+
+## 📋 Available Scripts
+
+```bash
+npm start              # Start desktop app
+npm run console        # Start console version (local)
+npm run console-server # Start console version (server sync)
+npm run server         # Start API server
+npm run dev            # Development mode
+npm run dist-win       # Build Windows installer
+```
+
+## 🔧 Configuration
+
+### Server Configuration
+Configure server address and port through the desktop app:
+1. Press `Ctrl+P` to open port configuration
+2. Enter address in format: `address:port`
+3. Examples:
+   - `todoodle.example:3001` (domain)
+   - `127.0.0.1:3001` (IP address)
+   - `localhost:3001` (local)
+
+### Theme Customization
+1. Copy `src/themes/TEMPLATE.theme.template`
+2. Rename to `your-theme.theme.css`
+3. Modify CSS variables for colors and styles
+4. Drop in `src/themes/` folder
+5. Select in app settings (Ctrl+B)
+
+### Background Images
+1. Press `Ctrl+B` to open theme settings
+2. Click "Browse" to select image file
+3. Background automatically applies and overrides theme
+
+## 📊 Features
+
+### Desktop App Features
+- **Progress Tracking**: Color-coded progress (Red→Orange→Yellow→Green→Purple)
+- **Categories**: Organize tasks with custom categories
+- **Notes**: Add detailed descriptions to tasks
+- **Priority Detection**: Automatic priority based on keywords
+- **Keyboard Shortcuts**: Power user efficiency
+- **Local Storage**: Data persistence without server
+
+### Console Features
+- **Command Management**: Full CRUD operations via CLI
+- **Progress Tracking**: Set and monitor task progress
+- **Category System**: Organize and filter tasks
+- **Search**: Find tasks by text or notes
+- **Statistics**: Completion metrics and insights
+- **Server Sync**: Optional API server integration
+
+### API Features
+- **OpenAPI Docs**: Interactive API documentation
+- **Flexible Config**: Support for domains, IPs, and ports
+- **CRUD Operations**: Complete todo management
+- **Statistics**: Analytics and reporting
+- **Health Monitoring**: Server status endpoints
+
+## 🌐 Usage Examples
+
+### Desktop Workflow
+```bash
+# Start app
+npm start
+
+# Add tasks with categories
+# Use Ctrl+B for themes and backgrounds
+# Use Ctrl+P for server configuration
+```
+
+### Console Workflow
+```bash
+# Start console
+npm run console
+
+# Add tasks
+add "Finish project" Work
+add "Buy groceries" Shopping
+
+# Track progress
+progress 1 75
+toggle 2
+
+# Search and stats
+search "project"
+stats
+```
+
+### Server Setup
+```bash
+# Start server
+npm run server
+
+# Configure custom address
+# Use Ctrl+P in desktop app
+# Enter: todoodle.example:3001
+```
+
+## 📁 Project Structure
+
+```
+todoodle/
+├── src/
+│   ├── themes/              # Custom themes
+│   │   ├── dark-matter.theme.css
+│   │   ├── fallout-terminal.theme.css
+│   │   ├── translucent.theme.css
+│   │   └── TEMPLATE.theme.template
+│   ├── main.js             # Electron main process
+│   ├── script.js           # Frontend logic
+│   ├── styles.css          # App styling
+│   ├── index.html          # Main HTML
+│   └── api-server.js       # REST API server
+├── docs/                   # Documentation
+├── console.js              # Console version
+├── console-server.js       # Server-enabled console
+└── themes/                 # Copied themes for GitHub Pages
+```
+
+## 🔍 API Endpoints
+
+### Todo Management
+- `GET /api/todos` - List all todos
+- `POST /api/todos` - Create new todo
+- `PUT /api/todos/:id` - Update todo
+- `DELETE /api/todos/:id` - Delete todo
+
+### Configuration
+- `PUT /api/config/server` - Update address and port
+- `GET /api/health` - Server health check
+
+### Documentation
+- `GET /api-docs` - Interactive OpenAPI docs
+
+## 🎯 Keyboard Shortcuts
+
+### Desktop App
+- `Ctrl+N` - New task
+- `Ctrl+B` - Theme settings
+- `Ctrl+P` - Port configuration
+- `Ctrl+D` - Toggle dark/light mode
+
+### Console
+- `help` - Show all commands
+- `clear` - Clear screen
+- `exit` - Quit application
+
+## 📱 Mobile & PWA
+
+- **PWA Ready** - Works on mobile browsers
+- **Capacitor Support** - Native mobile app development
+- **Responsive Design** - Adapts to all screen sizes
+
+## 🛠️ Development
+
+### Building for Production
+```bash
+# Windows installer
+npm run dist-win
+
+# Portable version
+npm run portable
+```
+
+### Mobile Development
+```bash
+# Setup Capacitor
+npm run capacitor:add
+
+# Sync and build
+npm run capacitor:sync
+npm run capacitor:open
+```
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/nowyback/todoodle/issues)
+- **Documentation**: [docs/](docs/)
+- **Releases**: [Latest Release](https://github.com/nowyback/todoodle/releases)
+
+---
+
+**Made with ❤️ for developers who want power and simplicity**
 
 ### Option 1: Install as Windows App (Recommended)
 ```bash

@@ -87,20 +87,19 @@
         </main>
 
         <div class="port-config-container" id="port-config" style="display: none; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; background: rgba(255, 255, 255, 0.02);">
-            <h3 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;">API Port Config</h3>
+            <h3 style="margin: 0 0 0.5rem 0; font-size: 0.875rem;">API Server Config</h3>
             <input 
-                type="number" 
+                type="text" 
                 id="port-input" 
                 class="port-input" 
-                placeholder="Detecting..." 
-                min="1000" 
-                max="65535"
-                title="Enter new port for API server"
+                placeholder="e.g., todoodle.example:3001 or 127.0.0.1:3001" 
+                title="Enter server address and port (address:port)"
             >
-            <button id="update-port-btn" class="port-btn">Update Port</button>
+            <button id="update-port-btn" class="port-btn">Update Server</button>
             <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
                 <div>⚠️ Server restart required after update</div>
-                <div>💡 Port change applies after API server restart</div>
+                <div>💡 Format: address:port (e.g., todoodle.example:3001)</div>
+                <div>🌐 Supports domains, IPs, and localhost</div>
             </div>
         </div>
 

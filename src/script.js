@@ -487,88 +487,127 @@ class TodoApp {
   }
 
   async detectCurrentPort() {
-    const possiblePorts = [3001, 3002, 3003, 8000, 8080, 6262];
-    let detectedPort = null;
+    const possibleServers = [
+      'localhost:3001',
+      'localhost:3002', 
+      'localhost:3003',
+      'localhost:8000',
+      'localhost:8080',
+      'localhost:6262',
+      '127.0.0.1:3001',
+      '127.0.0.1:3002',
+      '127.0.0.1:3003',
+      '127.0.0.1:8000',
+      '127.0.0.1:8080',
+      '127.0.0.1:6262'
+    ];
+    let detectedServer = null;
     
-    for (const port of possiblePorts) {
+    for (const server of possibleServers) {
       try {
-        const response = await fetch(`http://localhost:${port}/api/health`, {
+        const response = await fetch(`http://${server}/api/health`, {
           method: 'GET',
           signal: TimeoutController.timeout(2000)
         });
         
         if (response.ok) {
-          detectedPort = port;
+          detectedServer = server;
           const input = document.getElementById('port-input');
           if (input) {
-            input.placeholder = `Current: ${port}`;
-            input.title = `API server is running on port ${port}`;
+            input.placeholder = `Current: ${server}`;
+            input.title = `API server is running on ${server}`;
           }
-          console.log(`API server detected on port ${port}`);
+          console.log(`API server detected on ${server}`);
           break;
         }
       } catch (err) {
-        // Try next port
+        // Try next server
         continue;
       }
     }
     
-    if (!detectedPort) {
+    if (!detectedServer) {
       document.getElementById('port-input').placeholder = 'Server not detected';
-      document.getElementById('port-input').title = 'API server not running on common ports';
+      document.getElementById('port-input').title = 'API server not running on common addresses/ports';
     }
     
-    return detectedPort;
+    return detectedServer;
   }
 
   async updatePort() {
     const input = document.getElementById('port-input');
-    const port = parseInt(input.value);
+    const serverConfig = input.value.trim();
     
-    if (!port || port < 1000 || port > 65535) {
-      alert('Port must be between 1000 and 65535');
+    // Validate address:port format
+    if (!serverConfig) {
+      alert('Please enter a server address and port (e.g., todoodle.example:3001)');
+      return;
+    }
+    
+    // Parse address and port
+    const parts = serverConfig.split(':');
+    if (parts.length !== 2) {
+      alert('Invalid format. Use address:port (e.g., todoodle.example:3001 or 127.0.0.1:3001)');
+      return;
+    }
+    
+    const [address, portStr] = parts;
+    const port = parseInt(portStr);
+    
+    // Validate port
+    if (!port || port < 1 || port > 65535) {
+      alert('Port must be between 1 and 65535');
+      return;
+    }
+    
+    // Validate address
+    if (!address || address.trim() === '') {
+      alert('Please enter a valid address');
       return;
     }
     
     try {
-      // Get current detected port
-      const currentPort = await this.detectCurrentPort();
+      // Get current detected server
+      const currentServer = await this.detectCurrentPort();
       
-      if (!currentPort) {
-        alert('Could not detect running API server. Make sure it\'s running on one of the common ports.');
+      if (!currentServer) {
+        alert('Could not detect running API server. Make sure it\'s running on one of the common addresses.');
         return;
       }
       
-      // Update port using detected current port
-      const response = await fetch(`http://localhost:${currentPort}/api/config/port`, {
+      // Update server configuration using detected current server
+      const response = await fetch(`http://${currentServer}/api/config/server`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ port })
+        body: JSON.stringify({ 
+          address: address,
+          port: port 
+        })
       });
       
       if (response.ok) {
         const result = await response.json();
-        alert(`Port updated to ${port}. Please restart the API server to apply changes.\n\nPrevious server was running on port ${currentPort}.\n\nAfter restart, server will run on port ${port}.`);
+        alert(`Server configuration updated to ${address}:${port}.\n\nPrevious server was running on ${currentServer}.\n\nAfter restart, server will run on ${address}:${port}.`);
         this.togglePortConfig();
         
         // Clear input field
         input.value = '';
-        input.placeholder = `Previous: ${currentPort}, New: ${port}`;
+        input.placeholder = `Previous: ${currentServer}, New: ${address}:${port}`;
         
-        // Try to detect new port after a short delay
+        // Try to detect new server after a short delay
         setTimeout(() => {
           this.detectCurrentPort();
         }, 2000);
         
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to update port');
+        alert(error.error || 'Failed to update server configuration');
       }
     } catch (error) {
       alert('Failed to connect to API server. Make sure it\'s running.');
-      console.error('Port update error:', error);
+      console.error('Server update error:', error);
     }
   }
 
