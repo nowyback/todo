@@ -110,15 +110,21 @@
 
         <div class="download-section">
             <h2>Download</h2>
-            <a href="Todoodle%20Setup%200.11.0.exe" class="download-btn">
+            <a href="Todoodle%20Setup%200.11.3.exe" class="download-btn">
                 Download for Windows
             </a>
-            <div class="version">Version 0.11.0 • Windows 10/11</div>
+            <div class="version">Version 0.11.3 • Windows 10/11</div>
             <div style="margin-top: 20px;">
                 <a href="SERVER_SETUP.md" class="download-btn">
                     Server Setup Guide
                 </a>
             </div>
+            <div style="margin-top: 20px;">
+                <a href="todoodle-server-v0.11.4.zip" class="download-btn">
+                    Download Server Package
+                </a>
+            </div>
+            <div class="version">Server Version 0.11.4 • Cross-platform</div>
         </div>
 
         <h2>Features</h2>
@@ -151,8 +157,8 @@
             <div>
                 <h4>Quick Setup:</h4>
                 <pre>
-# Clone the repository
-git clone https://github.com/nowyback/todoodle.git
+# Clone the server branch
+git clone --branch server https://github.com/nowyback/todoodle.git
 cd todoodle
 
 # Install dependencies
@@ -161,9 +167,9 @@ npm install
 # Start the server
 npm run server
 
-# Start the app
-npm start</pre>
-                <p>Server will run on http://localhost:3001 by default</p>
+# Access the application
+# http://localhost:3001
+</pre>
             </div>
         </div>
 
