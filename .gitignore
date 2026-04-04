@@ -162,7 +162,8 @@ start.bat
 .DS_Store
 Thumbs.db
 
-# Server installation files
+# Server installation files (exclude from main, include in server branch)
+# Uncomment these lines for main branch, comment for server branch
 SERVER_INSTALL.md
 install.sh
 install.bat
@@ -178,7 +179,8 @@ backups/
 src/todos-api.json
 src/api-config.json
 
-# Console files
+# Console files (exclude from main, include in server branch)
+# Uncomment these lines for main branch, comment for server branch
 console-server.js
 todos-console.json
 
